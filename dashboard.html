@@ -1,0 +1,154 @@
+<!-- dashboard.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <style>
+        body {
+            background-color: #f9f9f9; /* Light theme background */
+            color: #333; /* Dark text for contrast */
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            margin: 0;
+        }
+        header {
+            background-color: #c0392b; /* Red navbar */
+            color: white;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+        }
+        header img {
+            height: 40px; /* Logo size */
+            margin-right: 20px;
+        }
+        input, button {
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #c0392b;
+            width: 100%;
+            border-radius: 4px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Soft shadow */
+        }
+        button {
+            background-color: #c0392b;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #e74c3c; /* Lighter red on hover */
+        }
+        #welcome {
+            margin-bottom: 20px;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            display: flex;
+            justify-content: space-between; /* Space between item name and remove button */
+            align-items: center;
+            margin: 5px 0;
+            padding: 10px;
+            border: 1px solid #c0392b;
+            border-radius: 4px;
+            background-color: #fff; /* White background for list items */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Soft shadow */
+        }
+        .remove-btn {
+            background-color: #e74c3c; /* Red remove button */
+            border: none;
+            padding: 5px 10px;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .remove-btn:hover {
+            background-color: #c0392b; /* Darker red on hover */
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <img src="logo.png" alt="Logo"> <!-- Add your logo here -->
+        <h1>Scout First Aid Kit Manager</h1>
+    </header>
+
+    <h1 id="welcome"></h1>
+    <h3>Add Item</h3>
+    <input type="text" id="item-name" placeholder="Item Name" required>
+    <input type="number" id="item-quantity" placeholder="Quantity" required>
+    <button id="add-item-btn">Add Item</button>
+
+    <h3>Items List</h3>
+    <ul id="item-list"></ul>
+    <button id="logout-btn">Logout</button>
+
+    <script>
+        const email = localStorage.getItem('loggedInUser');
+
+        // Redirect to login if not logged in
+        if (!email) {
+            window.location.href = 'login.html';
+        }
+
+        document.getElementById('welcome').innerText = `Welcome, ${email}`;
+
+        // Load items from local storage
+        function loadItems() {
+            const items = JSON.parse(localStorage.getItem(email + '_items')) || [];
+            const itemList = document.getElementById('item-list');
+            itemList.innerHTML = '';
+            items.forEach((item, index) => {
+                const li = document.createElement('li');
+                li.innerHTML = `${item.name}: ${item.quantity} <button class="remove-btn" data-index="${index}">Remove</button>`;
+                itemList.appendChild(li);
+            });
+
+            // Add event listeners to remove buttons
+            document.querySelectorAll('.remove-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const index = this.getAttribute('data-index');
+                    removeItem(index);
+                });
+            });
+        }
+
+        // Add Item
+        document.getElementById('add-item-btn').addEventListener('click', function() {
+            const itemName = document.getElementById('item-name').value;
+            const itemQuantity = parseInt(document.getElementById('item-quantity').value);
+
+            const items = JSON.parse(localStorage.getItem(email + '_items')) || [];
+            items.push({ name: itemName, quantity: itemQuantity });
+            localStorage.setItem(email + '_items', JSON.stringify(items));
+            loadItems();
+
+            document.getElementById('item-name').value = '';
+            document.getElementById('item-quantity').value = '';
+        });
+
+        // Remove Item
+        function removeItem(index) {
+            const items = JSON.parse(localStorage.getItem(email + '_items')) || [];
+            items.splice(index, 1); // Remove item by index
+            localStorage.setItem(email + '_items', JSON.stringify(items));
+            loadItems(); // Reload items
+        }
+
+        // Load items on page load
+        loadItems();
+
+        // Logout function
+        document.getElementById('logout-btn').addEventListener('click', function() {
+            localStorage.removeItem('loggedInUser');
+            window.location.href = 'login.html';
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!-- login.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <style>
+        body {
+            background-color: #f9f9f9; /* Light theme background */
+            color: #333; /* Dark text for contrast */
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            margin: 0;
+        }
+        header {
+            background-color: #c0392b; /* Red navbar */
+            color: white;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+        }
+        header img {
+            height: 40px; /* Logo size */
+            margin-right: 20px;
+        }
+        input, button {
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #c0392b;
+            width: 100%;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #c0392b;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #e74c3c; /* Lighter red on hover */
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <img src="logo.png" alt="Logo"> <!-- Add your logo here -->
+        <h1>Scout First Aid Kit Manager</h1>
+    </header>
+
+    <h2>Login</h2>
+    <input type="email" id="email" placeholder="Email" required>
+    <input type="password" id="password" placeholder="Password" required>
+    <button id="login-btn">Login</button>
+
+    <script>
+        document.getElementById('login-btn').addEventListener('click', function() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            // Simple login validation with hardcoded accounts
+            const users = {
+                'lucasrailton.ml@gmail.com': 'lucas.asd', // Change password accordingly
+                'improudtobeirish@gmail.com': 'kyle.asd',
+                'backup@asd.com': 'back.up'
+            };
+
+            if (users[email] && users[email] === password) {
+                localStorage.setItem('loggedInUser', email); // Store user email in local storage
+                window.location.href = 'dashboard.html'; // Redirect to dashboard
+            } else {
+                alert('Invalid email or password');
+            }
+        });
+    </script>
+</body>
+</html>
+
